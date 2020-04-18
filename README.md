@@ -22,8 +22,9 @@ const fruitSchema = new mongoose.Schema({
     name: String,
     rating: Number,
     review: String
-})
+});
 ```
+[Schema Types](https://mongoosejs.com/docs/api/schema.html#schema_Schema.Types)
 ___
 ## Making models
 ```javascript
@@ -35,7 +36,7 @@ const pineapple = new Fruit({
 })
 ```  
 ___  
-## Saving to the database
+## Saving to the database (`C`RUD)
 ```javascript
 pineapple.save();
 ```
@@ -51,3 +52,94 @@ Run ```node app.js``` and read the changes using usual mongoDB commands:
 ```
 ___
 
+## Saving multiple documents
+```javascript
+const kiwi = new Fruit({
+    name: 'Kiwi',
+    score: 9,
+    review: 'Tasty!'
+});
+const banana = new Fruit({
+    name: 'Banana',
+    score: 8,
+    review: 'Yum!'
+});
+const orange = new Fruit({
+    name: 'Orange',
+    score: 6,
+    review: 'Sour.'
+});
+
+Fruit.insertMany([kiwi, banana, orange], function(err) {
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log("Successfully saved");
+    }
+})
+```
+[Model.insertMany()](https://mongoosejs.com/docs/api/model.html#model_Model.insertMany)
+___
+
+## Reading from your database (C`R`UD)
+```javascript
+Fruit.find(function(err, fruits) {
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log(fruits);
+        fruits.forEach(function(fruit){
+            console.log(fruit.name);
+        mongoose.connection.close(); //Good practice to close the connection.
+        });
+    }
+});
+```
+[Model.find()](https://mongoosejs.com/docs/api/model.html#model_Model.find)  
+[Mongoose connection events](https://mongoosejs.com/docs/connections.html#connection-events)
+___
+## Updating the database (CR`U`D)
+##### We create a model instance with a missing name field and save it first.
+```javascript
+const strawberry = new Fruit({
+    score: 9,
+    review: 'Delicious, what fruit is this?'
+});
+strawberry.save();
+```
+
+##### Update the entry
+```javascript
+Fruit.updateOne({review: 'Delicious, what fruit is this?'}, {name: 'Strawberry'}, function(err){
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log("Successfully updated an entry");
+    }
+});
+```
+[Model.update()](https://mongoosejs.com/docs/api/model.html#model_Model.update)
+[Model.updateMany()](https://mongoosejs.com/docs/api/model.html#model_Model.updateMany)
+[Model.updateOne()](https://mongoosejs.com/docs/api/model.html#model_Model.updateOne)
+___
+## Data Validation with Mongoose
+Modify your `fruitSchema` to only accept ratings between 1 and 10, and set the name field as required.
+```javascript
+const fruitSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, "Why no name?"]
+    }
+    rating: {
+        type: Number,
+        min: 1,
+        max: 10
+    }
+    review: String
+});
+```
+[Mongoose Validation Docs](https://mongoosejs.com/docs/validation.html)
+___
