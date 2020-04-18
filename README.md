@@ -101,7 +101,7 @@ Fruit.find(function(err, fruits) {
 [Mongoose connection events](https://mongoosejs.com/docs/connections.html#connection-events)
 ___
 ## Updating the database (CR`U`D)
-##### We create a model instance with a missing name field and save it first.
+We create a model instance with a missing name field and save it first.
 ```javascript
 const strawberry = new Fruit({
     score: 9,
@@ -110,7 +110,7 @@ const strawberry = new Fruit({
 strawberry.save();
 ```
 
-##### Update the entry
+Update the entry
 ```javascript
 Fruit.updateOne({review: 'Delicious, what fruit is this?'}, {name: 'Strawberry'}, function(err){
     if (err) {
@@ -143,3 +143,67 @@ const fruitSchema = new mongoose.Schema({
 ```
 [Mongoose Validation Docs](https://mongoosejs.com/docs/validation.html)
 ___
+## Deleting an entry (CRU`D`)
+Deleting the strawberry document:
+```javascript
+Fruit.deleteOne({name: 'Strawberry'}, function(err) {
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log('Successfully deleted the document!');
+    }
+});
+```
+Deleting multiple documents where rating is greater than or equal to 5 :
+```javascript
+Fruit.deleteMany({rating: { $gte: 5 }}, function(err) {
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log('Successfully deleted the documents!');
+    }
+});
+```
+[Model.deleteOne()](https://mongoosejs.com/docs/api/model.html#model_Model.deleteOne)  
+[Model.deleteMany()](https://mongoosejs.com/docs/api/model.html#model_Model.deleteMany)
+___
+
+## Establishing relationships and Embedding Documents
+Assuming we have a `personSchema` defined as:
+```javascript
+const personSchema = new mongoose.Schema({
+    name: String,
+    age: Number,
+    favouriteFruit : fruitSchema
+});
+const Person = mongoose.model('Person', personSchema);
+```
+An instance of the `Fruit` model.
+```javascript
+const apple = new Fruit({
+    name: 'Apple',
+    rating: 9,
+    review: 'An apple a day keeps the doctor away!' 
+});
+apple.save();
+```
+A new `Person` instance can be created or existing documents can be updated to have `apple` as its `favouriteFruit`:
+```javascript
+const john = new Person({
+    name: 'John',
+    age: 36,
+    favouriteFruit: apple
+});
+john.save();
+
+Person.updateOne({name: 'Amy'}, {favouriteFruit: apple}, function(err) {
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log("Successfully updated the database!");
+    }
+});
+```
