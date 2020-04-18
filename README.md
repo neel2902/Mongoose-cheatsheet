@@ -121,9 +121,9 @@ Fruit.updateOne({review: 'Delicious, what fruit is this?'}, {name: 'Strawberry'}
     }
 });
 ```
-[Model.update()](https://mongoosejs.com/docs/api/model.html#model_Model.update)
-[Model.updateMany()](https://mongoosejs.com/docs/api/model.html#model_Model.updateMany)
-[Model.updateOne()](https://mongoosejs.com/docs/api/model.html#model_Model.updateOne)
+[Model.update()](https://mongoosejs.com/docs/api/model.html#model_Model.update)  
+[Model.updateMany()](https://mongoosejs.com/docs/api/model.html#model_Model.updateMany)  
+[Model.updateOne()](https://mongoosejs.com/docs/api/model.html#model_Model.updateOne)  
 ___
 ## Data Validation with Mongoose
 Modify your `fruitSchema` to only accept ratings between 1 and 10, and set the name field as required.
